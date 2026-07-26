@@ -2,65 +2,65 @@
 #EXT-X-VERSION:3
 
 #EXTINF:-1 group-title="beIN Sports", beIN Sports News
-https://nmouad773-cpu.github.io/REPOSITORY/hls/bein_news/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/bein_news/index.m3u8
 
 #EXTINF:-1 group-title="beIN Sports", beIN Sports 1
-https://nmouad773-cpu.github.io/REPOSITORY/hls/bein_1/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/bein_1/index.m3u8
 
 #EXTINF:-1 group-title="beIN Sports", beIN Sports 2
-https://nmouad773-cpu.github.io/REPOSITORY/hls/bein_2/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/bein_2/index.m3u8
 
 #EXTINF:-1 group-title="beIN Sports", beIN Sports 3
-https://nmouad773-cpu.github.io/REPOSITORY/hls/bein_3/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/bein_3/index.m3u8
 
 #EXTINF:-1 group-title="beIN Sports", beIN Sports 4
-https://nmouad773-cpu.github.io/REPOSITORY/hls/bein_4/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/bein_4/index.m3u8
 
 #EXTINF:-1 group-title="beIN Sports", beIN Sports 5
-https://nmouad773-cpu.github.io/REPOSITORY/hls/bein_5/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/bein_5/index.m3u8
 
 #EXTINF:-1 group-title="beIN Sports", beIN Sports 6
-https://nmouad773-cpu.github.io/REPOSITORY/hls/bein_6/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/bein_6/index.m3u8
 
 #EXTINF:-1 group-title="beIN Sports", beIN Sports 7
-https://nmouad773-cpu.github.io/REPOSITORY/hls/bein_7/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/bein_7/index.m3u8
 
 #EXTINF:-1 group-title="beIN Sports", beIN Sports 8
-https://nmouad773-cpu.github.io/REPOSITORY/hls/bein_8/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/bein_8/index.m3u8
 
 #EXTINF:-1 group-title="Thamanya", الثمانية 1
-https://nmouad773-cpu.github.io/REPOSITORY/hls/thamanya_1/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/thamanya_1/index.m3u8
 
 #EXTINF:-1 group-title="Thamanya", الثمانية 2
-https://nmouad773-cpu.github.io/REPOSITORY/hls/thamanya_2/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/thamanya_2/index.m3u8
 
 #EXTINF:-1 group-title="Thamanya", الثمانية 3
-https://nmouad773-cpu.github.io/REPOSITORY/hls/thamanya_3/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/thamanya_3/index.m3u8
 
 #EXTINF:-1 group-title="MBC", MBC 2
-https://nmouad773-cpu.github.io/REPOSITORY/hls/mbc_2/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/mbc_2/index.m3u8
 
 #EXTINF:-1 group-title="MBC", MBC 3
-https://nmouad773-cpu.github.io/REPOSITORY/hls/mbc_3/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/mbc_3/index.m3u8
 
 #EXTINF:-1 group-title="MBC", MBC 4
-https://nmouad773-cpu.github.io/REPOSITORY/hls/mbc_4/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/mbc_4/index.m3u8
 
 #EXTINF:-1 group-title="MBC", MBC 5
-https://nmouad773-cpu.github.io/REPOSITORY/hls/mbc_5/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/mbc_5/index.m3u8
 
 #EXTINF:-1 group-title="Moroccan", Al Aoula HD
-https://nmouad773-cpu.github.io/REPOSITORY/hls/al_aoula/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/al_aoula/index.m3u8
 
 #EXTINF:-1 group-title="Moroccan", 2M Maroc
-https://nmouad773-cpu.github.io/REPOSITORY/hls/maroc_2m/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/maroc_2m/index.m3u8
 
 #EXTINF:-1 group-title="Moroccan", Arryadia HD
-https://nmouad773-cpu.github.io/REPOSITORY/hls/arryadia/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/arryadia/index.m3u8
 
 #EXTINF:-1 group-title="Documentary", National Geographic
-https://nmouad773-cpu.github.io/REPOSITORY/hls/nat_geo/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/nat_geo/index.m3u8
 
 #EXTINF:-1 group-title="Islamic", القرآن الكريم
-https://nmouad773-cpu.github.io/REPOSITORY/hls/quran/index.m3u8
+https://USERNAME.github.io/REPOSITORY/hls/quran/index.m3u8
 
