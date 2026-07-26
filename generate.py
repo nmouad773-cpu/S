@@ -1,6 +1,8 @@
 import os
+import subprocess
+import threading
+import time
 
-# قائمة القنوات
 CHANNELS = [
     {"id": "bein_news", "name": "beIN Sports News", "url": "http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917225.ts", "group": "beIN Sports"},
     {"id": "bein_1", "name": "beIN Sports 1", "url": "http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917215.ts", "group": "beIN Sports"},
@@ -25,23 +27,55 @@ CHANNELS = [
     {"id": "quran", "name": "القرآن الكريم", "url": "http://vpn.bimtrex.eu/live/2c16beb3ae/b28582fcb55a/2112498.ts", "group": "Islamic"}
 ]
 
-def generate_files():
-    domain = os.getenv("PAGES_URL", "https://nmouad773-cpu.github.io/REPOSITORY")
-    
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+HLS_DIR = os.path.join(BASE_DIR, "hls")
+
+def start_ffmpeg(ch):
+    ch_dir = os.path.join(HLS_DIR, ch["id"])
+    os.makedirs(ch_dir, exist_ok=True)
+    playlist_path = os.path.join(ch_dir, "index.m3u8")
+
+    cmd = [
+        "ffmpeg", "-hide_banner", "-loglevel", "error",
+        "-reconnect", "1", "-reconnect_at_eof", "1", "-reconnect_streamed", "1",
+        "-i", ch["url"],
+        "-c", "copy",
+        "-f", "hls",
+        "-hls_time", "6",
+        "-hls_list_size", "20",
+        "-hls_flags", "delete_segments",
+        playlist_path
+    ]
+
+    try:
+        subprocess.run(cmd)
+    except Exception as e:
+        print(f"Error streaming {ch['name']}: {e}")
+
+def create_master_playlists(domain):
     content = "#EXTM3U\n#EXT-X-VERSION:3\n\n"
     for ch in CHANNELS:
-        # رابط البث المحوّل HLS
-        m3u8_link = f"{domain.rstrip('/')}/hls/{ch['id']}/index.m3u8"
-        content += f'#EXTINF:-1 group-title="{ch["group"]}", {ch["name"]}\n{m3u8_link}\n\n'
-        
-    # إنشاء الملفات فوراً
-    with open("playlist.m3u8", "w", encoding="utf-8") as f:
+        stream_url = f"{domain.rstrip('/')}/hls/{ch['id']}/index.m3u8"
+        content += f'#EXTINF:-1 group-title="{ch["group"]}", {ch["name"]}\n{stream_url}\n\n'
+    
+    with open(os.path.join(BASE_DIR, "playlist.m3u8"), "w", encoding="utf-8") as f:
         f.write(content)
-        
-    with open("playlist.m3u", "w", encoding="utf-8") as f:
+    with open(os.path.join(BASE_DIR, "playlist.m3u"), "w", encoding="utf-8") as f:
         f.write(content)
-
-    print("Done generating playlist files successfully!")
 
 if __name__ == "__main__":
-    generate_files()
+    os.makedirs(HLS_DIR, exist_ok=True)
+    domain = os.getenv("PAGES_URL", "https://nmouad773-cpu.github.io/REPOSITORY")
+    create_master_playlists(domain)
+
+    # تشغيل عملية البث لجميع القنوات بالتوازي
+    threads = []
+    for ch in CHANNELS:
+        t = threading.Thread(target=start_ffmpeg, args=(ch,), daemon=True)
+        t.start()
+        threads.append(t)
+        time.sleep(0.3)
+
+    # ابقاء البث شغالاً لمدة 30 دقيقة قبل الانتقال للـ Workflow التالي
+    run_duration = int(os.getenv("STREAM_DURATION", "1800"))
+    time.sleep(run_duration)
