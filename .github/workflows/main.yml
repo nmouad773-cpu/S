@@ -1,27 +1,23 @@
-name: IPTV TS to HLS
+name: IPTV HLS Converter
 
 on:
   workflow_dispatch:
 
 jobs:
-  convert:
+  hls:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install FFmpeg
+        run: |
+          sudo apt update
+          sudo apt install -y ffmpeg
 
-    - name: Install FFmpeg
-      run: |
-        sudo apt update
-        sudo apt install -y ffmpeg
+      - name: Create channels
+        run: |
+          mkdir -p output
 
-    - name: Create folders
-      run: |
-        mkdir -p output
-
-    - name: Start HLS conversion
-      run: |
-
-        cat > channels.txt <<'EOF'
+          cat > channels.txt <<'EOF'
 Bein_News|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917225.ts
 Bein_1|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917215.ts
 Bein_2|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917214.ts
@@ -31,16 +27,13 @@ Bein_5|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917211.ts
 Bein_6|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917210.ts
 Bein_7|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917209.ts
 Bein_8|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917208.ts
-
 Athmania_1|http://line.vpntxvpn.ru/live/1508358b7d/7b13892f97dc/1898976.ts
 Athmania_2|http://line.vpntxvpn.ru/live/1508358b7d/7b13892f97dc/1898975.ts
 Athmania_3|http://line.vpntxvpn.ru/live/1508358b7d/7b13892f97dc/1899054.ts
-
 MBC_2|http://vpn.bimtrex.eu/live/2c16beb3ae/b28582fcb55a/7746.ts
 MBC_3|http://vpn.bimtrex.eu/live/2c16beb3ae/b28582fcb55a/7745.ts
 MBC_4|http://vpn.bimtrex.eu/live/2c16beb3ae/b28582fcb55a/7744.ts
 MBC_5|http://vpn.bimtrex.eu/live/2c16beb3ae/b28582fcb55a/90929.ts
-
 Al_Aoula|http://vpn.bimtrex.eu/live/2c16beb3ae/b28582fcb55a/891367.ts
 2M_Maroc|http://vpn.bimtrex.eu/live/2c16beb3ae/b28582fcb55a/6736.ts
 Arryadia_HD|http://vpn.bimtrex.eu/live/2c16beb3ae/b28582fcb55a/969051.ts
@@ -48,44 +41,28 @@ National_Geo|http://vpn.bimtrex.eu/live/2c16beb3ae/b28582fcb55a/880186.ts
 Quran_Kareem|http://vpn.bimtrex.eu/live/2c16beb3ae/b28582fcb55a/2112498.ts
 EOF
 
+      - name: Convert TS to HLS
+        run: |
+          while IFS="|" read -r name url
+          do
+            mkdir -p output/$name
 
-        while IFS="|" read -r name url
-        do
+            ffmpeg -y \
+            -i "$url" \
+            -c:v copy \
+            -c:a aac \
+            -f hls \
+            -hls_time 6 \
+            -hls_list_size 5 \
+            -hls_flags delete_segments \
+            output/$name/index.m3u8 &
 
-        mkdir -p output/$name
+          done < channels.txt
 
-        ffmpeg \
-        -re \
-        -i "$url" \
-        -c:v copy \
-        -c:a aac \
-        -f hls \
-        -hls_time 6 \
-        -hls_list_size 6 \
-        -hls_flags delete_segments \
-        output/$name/index.m3u8 &
+          sleep 30
 
-        done < channels.txt
-
-
-        sleep 30
-
-
-    - name: Create M3U playlist
-      run: |
-
-        echo "#EXTM3U" > output/channels.m3u
-
-        for i in output/*/
-        do
-          name=$(basename "$i")
-          echo "#EXTINF:-1,$name" >> output/channels.m3u
-          echo "$name/index.m3u8" >> output/channels.m3u
-        done
-
-
-    - name: Upload M3U8 files
-      uses: actions/upload-artifact@v4
-      with:
-        name: IPTV-HLS-M3U8
-        path: output
+      - name: Upload files
+        uses: actions/upload-artifact@v4
+        with:
+          name: HLS-CHANNELS
+          path: output
