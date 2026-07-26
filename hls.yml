@@ -1,0 +1,77 @@
+name: TS to HLS Converter
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"
+
+jobs:
+  stream:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install FFmpeg
+      run: |
+        sudo apt update
+        sudo apt install -y ffmpeg
+
+    - name: Create HLS folders
+      run: |
+        mkdir -p output
+
+    - name: Convert channels
+      run: |
+        cat <<'EOF' > channels.txt
+Bein News|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917225.ts
+Bein 1|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917215.ts
+Bein 2|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917214.ts
+Bein 3|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917213.ts
+Bein 4|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917212.ts
+Bein 5|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917211.ts
+Bein 6|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917210.ts
+Bein 7|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917209.ts
+Bein 8|http://line.trxdnscloud.ru/live/1508358b7d/7b13892f97dc/1917208.ts
+EOF
+
+
+        while IFS="|" read -r name url
+        do
+          echo "Starting $name"
+
+          id=$(echo $name | tr ' ' '_' )
+
+          mkdir -p output/$id
+
+          nohup ffmpeg \
+          -re \
+          -i "$url" \
+          -c:v copy \
+          -c:a aac \
+          -f hls \
+          -hls_time 6 \
+          -hls_list_size 5 \
+          -hls_flags delete_segments \
+          output/$id/index.m3u8 &
+
+        done < channels.txt
+
+
+        sleep 20
+
+    - name: Generate M3U playlist
+      run: |
+        echo "#EXTM3U" > output/channels.m3u
+
+        for folder in output/*/
+        do
+          name=$(basename "$folder")
+          echo "#EXTINF:-1,$name" >> output/channels.m3u
+          echo "$folder/index.m3u8" >> output/channels.m3u
+        done
+
+
+    - name: Upload HLS files
+      uses: actions/upload-artifact@v4
+      with:
+        name: hls-channels
+        path: output
