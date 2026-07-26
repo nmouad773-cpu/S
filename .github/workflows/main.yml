@@ -1,43 +1,32 @@
-name: Generate IPTV Playlist
+name: Live Streamer Automation
 
 on:
-  push:
-    branches: [ "main" ]
   schedule:
-    - cron: '0 0 * * *'  # يعمل يوميًا تلقائيًا لتحديث القائمة
-  workflow_dispatch:      # يسمح بتشغيله يدويًا في أي وقت
-
-permissions:
-  contents: write
-  pages: write
-  id-token: write
+    # إعادة تشغيل السكريبت تلقائياً كل 3 ساعات و 40 دقيقة لضمان استمرار البث 24/7
+    - cron: '0 */4 * * *'
+  workflow_dispatch: # إمكانية التشغيل اليدوي بنقرة زر
 
 jobs:
-  build-and-deploy:
+  stream:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          python-version: '3.x'
+          node-version: '18'
 
-      - name: Run Playlist Generator
-        run: python generate.py
+      - name: Install System Dependencies (FFmpeg)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
 
-      - name: Upload Artifacts (Downloadable Files)
-        uses: actions/upload-artifact@v4
-        with:
-          name: iptv-m3u-files
-          path: |
-            playlist.m3u
-            playlist.m3u8
+      - name: Install Node Dependencies
+        run: |
+          npm install axios
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
-          keep_files: false
+      - name: Run Streaming Script
+        run: node streamer.js
